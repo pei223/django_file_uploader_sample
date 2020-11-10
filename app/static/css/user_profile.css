@@ -1,0 +1,15 @@
+.thumbnail-image-block {
+    object-fit: fill;
+    width: 100%;
+    border: 1px solid silver;
+    border-radius: 10px;
+}
+
+#id_intro {
+    border-radius: 8px;
+    height: 200px;
+}
+
+.notice-toast {
+    background-color: #43a047;
+}

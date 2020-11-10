@@ -1,0 +1,105 @@
+{% extends "_base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/user_profile.css' %}">
+{% endblock %}
+{% load custom_tag %}
+{% block page_title %}django_image_sample - profile{% endblock %}
+{% block page_head_title %}Profile{% endblock %}
+
+
+{% block content %}
+<div class="card">
+    <form method="post" enctype="multipart/form-data" name="user_form">
+        {% csrf_token %}
+        <div class="card-content">
+            <div class="row">
+                <div class="col s4">
+                    <label for="thumbnail_image">thumbnail</label>
+                    <img src="{{ user_profile.thumbnail_url }}" class="thumbnail-image-block" id="thumbnail_image"/>
+                </div>
+                <div class="col s8">
+                    <label for="id_intro">introduce</label>
+                    {{ form.intro }}
+                    {{ form.intro.errors }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="file-field input-field">
+                    {{ form.thumbnail.errors }}
+                    <div class="btn light-blue">
+                        <span>Thumbnail</span>
+                        {{ form.thumbnail }}
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path" type="text" placeholder="Upload image">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <label for="id_is_thumbnail_delete" class=" valign-wrapper">
+                    <span style="padding-right: 10px">サムネイル削除</span>
+                    {{ form.is_thumbnail_delete }}
+                    <span></span>
+                </label>
+            </div>
+        </div>
+        <div class="card-action">
+            <button class="btn waves-effect waves-light light-blue" type="button" onclick="submitForm()">
+                保存
+            </button>
+            <button class="btn waves-effect waves-light light-blue" type="button"
+                    onclick="location.href='/accounts/profile'" style="padding-left: 20px;">
+                クリア
+            </button>
+        </div>
+    </form>
+</div>
+<div style="width: 100%; text-align: center">
+    <button class="btn modal-trigger waves-effect waves-light red" data-target="confirm-modal"
+            style="padding-left: 20px;">
+        ユーザー削除
+    </button>
+</div>
+<div id="confirm-modal" class="modal">
+    <div class="modal-content">
+        <h4>Modal Header</h4>
+        <p>A bunch of text</p>
+    </div>
+    <div class="modal-footer">
+        <a onclick="deleteUser()" class="modal-close waves-effect waves-green btn-flat">Delete</a>
+        <a class="modal-close waves-effect waves-green btn-flat">Cancel</a>
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var options = {};
+    var elems = document.querySelectorAll('.modal');
+    var instances = M.Modal.init(elems, options);
+});
+
+{% if is_save_succeed %}
+M.toast({html: '保存しました.', displayLength: 1000, classes: 'notice-toast'})
+{% endif %}
+
+function deleteUser() {
+    location.href = '/accounts/delete'
+}
+
+function submitForm() {
+    var fileSize = 0;
+    var fileList = document.getElementById("id_thumbnail").files;
+    for(var i=0; i<fileList.length; i++){
+        fileSize += fileList[i].size;
+    }
+    if (fileSize > 5 * (1000**2)) {
+        window.alert("ファイルサイズが大きすぎます. \n5MB以上のファイルはアップロードできません.");
+        return;
+    }
+	document.forms['user_form'].submit();
+}
+
+</script>
+
+{% endblock %}

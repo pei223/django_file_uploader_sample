@@ -1,0 +1,90 @@
+{% extends "_base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/user_profile.css' %}">
+{% endblock %}
+{% load custom_tag %}
+{% block page_title %}django_image_sample - files{% endblock %}
+{% block page_head_title %}Files{% endblock %}
+
+
+{% block content %}
+<div class="card">
+    <form method="post" enctype="multipart/form-data" name="file_upload_form">
+        {% csrf_token %}
+        <div class="card-content">
+            <div class="file-field input-field">
+                {{ form.file.errors }}
+                <div class="btn light-blue">
+                    <span>File Upload</span>
+                    {{ form.file }}
+                </div>
+                <div class="file-path-wrapper">
+                    <input class="file-path" type="text" placeholder="Upload image">
+                </div>
+            </div>
+        </div>
+        <div class="card-action">
+            <button class="btn waves-effect waves-light light-blue" type="button" onclick="uploadFile()">
+                Upload
+            </button>
+        </div>
+    </form>
+</div>
+{% for file_record in file_records %}
+<div class="card">
+    <div class="card-content row valign-wrapper" style="padding: 12px">
+        <div class="col s10">
+            {{ file_record.file_name }}
+        </div>
+        <div class="col s1">
+            <a class="right" style="cursor: pointer;" href="/files/download?pk={{ file_record.id_ }}"><i
+                    class="material-icons small"
+                    style="color: #1E88E5;">download</i></a>
+        </div>
+        <div class="col s1">
+            <a class="right" style="cursor: pointer;" href="/files/delete?pk={{ file_record.id_ }}"><i
+                    class="material-icons small"
+                    style="color: red;">delete</i></a>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<div class="center-align">
+    {% include 'common/_paging.html' %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var options = {};
+    var elems = document.querySelectorAll('.modal');
+    var instances = M.Modal.init(elems, options);
+});
+
+{% if is_save_succeed %}
+M.toast({html: 'ファイルをアップロードしました.', displayLength: 1000, classes: 'notice-toast'})
+{% endif %}
+
+{% if is_delete_succeed %}
+M.toast({html: 'ファイルを削除しました.', displayLength: 1000, classes: 'notice-toast'})
+{% endif %}
+
+
+function uploadFile() {
+    var fileSize = 0;
+    var fileList = document.getElementById("id_file").files;
+    for(var i=0; i<fileList.length; i++){
+        fileSize += fileList[i].size;
+    }
+    if (fileSize > 1000**3) {
+        window.alert("ファイルサイズが大きすぎます.");
+        return;
+    }
+	document.forms['file_upload_form'].submit();
+}
+
+</script>
+
+{% endblock %}

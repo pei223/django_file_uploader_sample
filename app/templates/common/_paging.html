@@ -1,0 +1,29 @@
+<ul class="pagination">
+    {% if paginator.has_previous %}
+    <li style="cursor: pointer;">
+        <a href="?page={{ paginator.previous_page_number }}"><i class="material-icons">chevron_left</i></a>
+    </li>
+    {% else %}
+    <li class="disabled">
+        <a><i class="material-icons">chevron_left</i></a>
+    </li>
+    {% endif %}
+
+    {% for num in paginator.paginator.page_range %}
+    {% if paginator.number == num %}
+    <li class="waves-effect active light-blue"><a href="?page={{ num }}">{{ num }}</a></li>
+    {% else %}
+    <li class="waves-effect"><a href="?page={{ num }}">{{ num }}</a></li>
+    {% endif %}
+    {% endfor %}
+
+    {% if paginator.has_next %}
+    <li class="waves-effect"><a href="?page={{ paginator.next_page_number }}">
+        <i class="material-icons">chevron_right</i></a>
+    </li>
+    {% else %}
+    <li class="disabled">
+        <a><i class="material-icons">chevron_right</i></a>
+    </li>
+    {% endif %}
+</ul>
