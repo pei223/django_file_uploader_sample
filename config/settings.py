@@ -6,7 +6,7 @@ env.read_env(os.path.join(BASE_DIR, '.env'))
 
 SECRET_KEY = env('SECRET_KEY')
 
-ALLOWED_HOSTS = env('ALLOWED_HOST')
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -19,7 +19,10 @@ DATABASES = {
         'PASSWORD': env('DB_USER_PASSWORD'),
         'HOST': env('DB_HOST'),
         'PORT': env('DB_PORT'),
-    }
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        },
+    },
 }
 
 MEDIA_ROOT = f'/var/www/{PROJECT_NAME}/media'

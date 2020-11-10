@@ -7,6 +7,7 @@ black app --line-length 120
 flake8 app --show-source --max-complexity 5 --max-line-length 120
 ```
 
+
 ## Set lint
 ```
 flake8 --install-hook git
@@ -19,12 +20,20 @@ cp .flake8 ~/.flake8
 ### Production
 ```
 pip install -r requirements.txt
-python manage.py makemigrations
-python manage.py migrate
-mkdir secret
 mkdir -p /var/www/django_file_uploader_sample/media
 mkdir -p /var/www/django_file_uploader_sample/static
+python manage.py collectstatic
+python manage.py makemigrations
+python manage.py migrate
+apt install mysql-server mysql-client libmysqlclient-dev
+pip install mysqlclient
+
+# Database setting(MySQL)
+create user <user name> identified by '<password>';
+create database <DB name>;
+grant all on <DB name>.* to '<user name>'@'localhost' identified by '<Password>';
 ```
+
 ### Development
 ```
 pip install -r requirements.txt
@@ -34,11 +43,11 @@ mkdir secret
 mkdir media
 ```
 
+
 ## Deploy
 ### Production
 ```
-python manage.py collectstatic
-gunicorn --env DJANGO_SETTINGSMODULE=config.settings config.wsgi:application --bind <IP Address>:<Port> -w 5 --threads 5 -D --log-syslog --access-logfile access.log --log-file error.log
+gunicorn --env DJANGO_SETTINGSMODULE=config.settings config.wsgi:application --bind 127.0.0.1:<Port> -w 5 --threads 5 -D --log-syslog --access-logfile access.log --log-file error.log
 ```
 
 ### Development

@@ -9,8 +9,6 @@ from app.infra.utils import delete_file
 
 class FileRecordQuerySet(models.QuerySet):
     def get_user_files(self, user_id: int, page_num: int, paginate_by: int) -> List[FileRecord]:
-        print(self.filter(user__id=user_id).order_by("created_at").reverse()[
-              (page_num - 1) * paginate_by:page_num * paginate_by].query)
         rows = self.filter(user__id=user_id).order_by("created_at").reverse()[
                (page_num - 1) * paginate_by:page_num * paginate_by]
         if not rows.exists():
